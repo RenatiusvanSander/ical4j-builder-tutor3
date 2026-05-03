@@ -11,8 +11,8 @@
 	<properties>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.version>3.13.0</maven.compiler.version>
-		<maven.jar.version>3.4.1</maven.jar.version>
+		<maven.compiler.version>3.15.0</maven.compiler.version>
+		<maven.jar.version>3.5.0</maven.jar.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit5.version>5.14.2</junit5.version>
 		<library.author>ReMad</library.author>
@@ -40,20 +40,20 @@
 		<!-- own implementations -->
 		<dependency>
 			<groupId>edu.remad</groupId>
-			<artifactId>tutoring2-models</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<artifactId>tutoring3-models</artifactId>
+			<version>0.60.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>ical4j-builder</finalName>
+		<finalName>ical4j-builder-tutor3</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.compiler.version}</version>
 				<configuration>
-					<encoding>${encoding}</encoding>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<source>${maven.compiler.target}</source>
 					<target>${maven.compiler.source}</target>
 				</configuration>
