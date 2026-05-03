@@ -45,9 +45,10 @@ public class InterchangeCalendarBuilder {
 	private Location location;
 
 	/**
+	 * Sets startTime
 	 * 
-	 * @param startTime
-	 * @return
+	 * @param startTime start time to set as {@link LocalDateTime}
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
@@ -56,9 +57,10 @@ public class InterchangeCalendarBuilder {
 	}
 
 	/**
+	 * Sets endTime
 	 * 
-	 * @param endTime
-	 * @return
+	 * @param endTime end time to set as {@link LocalDateTime}
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
@@ -67,9 +69,10 @@ public class InterchangeCalendarBuilder {
 	}
 
 	/**
+	 * Sets appointment name
 	 * 
-	 * @param appointmentName
-	 * @return
+	 * @param appointmentName appointment name to set
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setAppointmentName(String appointmentName) {
 		this.appointmentName = appointmentName;
@@ -78,9 +81,10 @@ public class InterchangeCalendarBuilder {
 	}
 
 	/**
+	 * Sets attendees
 	 * 
-	 * @param attendees
-	 * @return
+	 * @param attendees a key-list-map of attendees
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setAttendees(Map<String, List<Parameter>> attendees) {
 		this.attendees = attendees;
@@ -89,9 +93,10 @@ public class InterchangeCalendarBuilder {
 	}
 
 	/**
+	 * Sets organizers
 	 * 
-	 * @param organizers
-	 * @return
+	 * @param organizers a key-list-map o organizers
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setOrganizers(Map<String, List<Parameter>> organizers) {
 		this.organizers = organizers;
@@ -100,9 +105,10 @@ public class InterchangeCalendarBuilder {
 	}
 
 	/**
+	 * Sets productive identifier
 	 * 
-	 * @param prodId
-	 * @return
+	 * @param prodId productive identifier as {@link Property}
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setProdId(Property prodId) {
 		this.prodId = prodId;
@@ -111,9 +117,10 @@ public class InterchangeCalendarBuilder {
 	}
 
 	/**
+	 * Sets location
 	 * 
-	 * @param location
-	 * @return
+	 * @param location place as {@link Location}
+	 * @return {@link InterchangeCalendarBuilder}
 	 */
 	public InterchangeCalendarBuilder setLocation(Location location) {
 		this.location = location;

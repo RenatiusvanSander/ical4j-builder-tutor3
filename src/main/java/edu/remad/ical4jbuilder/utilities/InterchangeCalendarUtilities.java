@@ -17,6 +17,7 @@ import edu.remad.ical4jbuilder.constants.InterchangeCalendarConstants;
 import edu.remad.ical4jbuilder.exceptions.InterChangeCalendarUtilitiesException;
 import edu.remad.ical4jbuilder.models.InterchangeCalendarData;
 import edu.remad.ical4jbuilder.models.InterchangeCalendarProdId;
+import edu.remad.tutoring3.persistence.models.TutoringAppointmentEntity;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.Email;
@@ -39,14 +40,26 @@ public final class InterchangeCalendarUtilities {
 		// do not instantiate
 	}
 
+	/**
+	 * @return generates {@link Uid}
+	 */
 	public static Uid generateUid() {
 		return InterchangeCalendarConstants.UID_GENERATOR.generateUid();
 	}
 
+	/**
+	 * @return creates {@link InterchangeCalendarProdId}
+	 */
 	public static InterchangeCalendarProdId createInterchangeCalendarProdId() {
 		return new InterchangeCalendarProdId();
 	}
 
+	/**
+	 * Creates a map of organizer
+	 * 
+	 * @param organizerData key-value-map for organizer's data
+	 * @return key-list-value-map is organizers map
+	 */
 	public static Map<String, List<Parameter>> createOrganizerMap(Map<String, String> organizerData) {
 		if (organizerData.isEmpty()) {
 			throw new InterChangeCalendarUtilitiesException("organizer data has to be populated.");
@@ -95,6 +108,12 @@ public final class InterchangeCalendarUtilities {
 		return parameters;
 	}
 
+	/**
+	 * Creates attendee map
+	 * 
+	 * @param attendeeData key-value-map of attendee data
+	 * @return key-listvalue as map
+	 */
 	public static Map<String, List<Parameter>> createAttendeeMap(Map<String, String> attendeeData) {
 		if (attendeeData.isEmpty()) {
 			throw new InterChangeCalendarUtilitiesException("attendee data has to be populated.");
@@ -107,28 +126,57 @@ public final class InterchangeCalendarUtilities {
 		return attendee;
 	}
 
+	/**
+	 * Creates calendar data
+	 * 
+	 * @param appointment appointment as {@link TutoringAppointmentEntity} to create
+	 *                    {@link InterchangeCalendarData}
+	 * @return {@link InterchangeCalendarData}
+	 */
 	public static InterchangeCalendarData createCalendarData(TutoringAppointmentEntity appointment) {
 		String name = createAppointmentName(appointment.getTutoringAppointmentStartDateTime());
 		Map<String, List<Parameter>> organizer = createOrganizerMap(createOraganizerData());
 		Map<String, List<Parameter>> attendee = createAttendeeMap(createAttendeeData(appointment));
 
-		return new InterchangeCalendarDataBuilder().organizers(organizer).attendees(attendee).location(InterchangeCalendarConstants.LOCATION)
+		return new InterchangeCalendarDataBuilder().organizers(organizer).attendees(attendee)
+				.location(InterchangeCalendarConstants.LOCATION)
 				.startTime(appointment.getTutoringAppointmentStartDateTime())
 				.endTime(appointment.getTutoringAppointmentEndDateTime()).appointmentName(name)
 				.prodId(createInterchangeCalendarProdId()).filePath(InterchangeCalendarConstants.FILE_NAME).build();
 	}
 
+	/**
+	 * @return creates organizer data
+	 */
 	public static Map<String, String> createOraganizerData() {
+		return createOraganizerData("remad@web.de","ReMad");
+	}
+
+	/**
+	 * Creates organizer data with custom e-mail and username
+	 * 
+	 * @param email e-mail address to set
+	 * @param userName user's name to set
+	 * @return key-value-map with organizer's data
+	 */
+	public static Map<String, String> createOraganizerData(String email, String userName) {
 		Map<String, String> organizerData = new HashMap<>();
-		organizerData.put(EMAIL, "remad@web.de");
-		organizerData.put(CN, "ReMad");
+		organizerData.put(EMAIL, email);
+		organizerData.put(CN, userName);
 
 		return organizerData;
 	}
 
+	/**
+	 * Creates attendees' data
+	 * 
+	 * @param appointment tutoring appointment data as
+	 *                    {@link TutoringAppointmentEntity}
+	 * @return
+	 */
 	public static Map<String, String> createAttendeeData(TutoringAppointmentEntity appointment) {
-		String fullName = String.join(StringUtils.SPACE, appointment.getTutoringAppointmentUser().getFirstName(),
-				appointment.getTutoringAppointmentUser().getLastName());
+		String fullName = String.join(StringUtils.SPACE, appointment.getTutoringAppointmentUser().getGivenName(),
+				appointment.getTutoringAppointmentUser().getFamilyName());
 		Map<String, String> attendeeData = new HashMap<>();
 		attendeeData.put(EMAIL, appointment.getTutoringAppointmentUser().getEmail());
 		attendeeData.put(CN, fullName);
@@ -136,32 +184,57 @@ public final class InterchangeCalendarUtilities {
 		return attendeeData;
 	}
 
+	/**
+	 * Creates appointment name
+	 * 
+	 * @param startTime start time as {@link LocalDateTime}
+	 * @return appointment's name as encoded {@link String}
+	 */
 	public static String createAppointmentName(LocalDateTime startTime) {
 		String convertedTime = convertLocaldateTimeToTime(startTime);
 
 		return InterchangeCalendarConstants.APPOINTMENT_NAME + convertedTime;
 	}
 
+	/**
+	 * Converts a {@link LocalDateTime} to a formatted time string.
+	 * 
+	 * @param time time as {@link LocalDateTime}
+	 * @return converted string-encoded time
+	 */
 	public static String convertLocaldateTimeToTime(LocalDateTime time) {
 		return time.format(InterchangeCalendarConstants.DATE_AND_TIME_FORMATTER);
 	}
-	
-	// TODO refactor and work with TutoringAppointmentEntity
-	public static List<byte[]> createInterchangeCalendarFile(List<ReminderEntity> reminders) {
+
+	/**
+	 * Creates Interchange Calendar File
+	 * 
+	 * @param appointments will changed
+	 * @return list of byte arrays
+	 */
+	public static List<byte[]> createInterchangeCalendarFile(List<TutoringAppointmentEntity> appointments) {
 		List<byte[]> calendarFiles = new ArrayList<>();
-		
-		for(ReminderEntity reminder : reminders) {
-			byte[] calendarFile = createCalendarFile(createCalendarData(reminder.getReminderTutoringAppointment()));
+
+		for (TutoringAppointmentEntity appointment : appointments) {
+			byte[] calendarFile = createCalendarFile(createCalendarData(appointment));
 			calendarFiles.add(calendarFile);
 		}
-		
+
 		return calendarFiles;
 	}
 
+	/**
+	 * Creates ics-file from object of {@link InterchangeCalendarData}
+	 * 
+	 * @param calendarData interchange calendar data as
+	 *                     {@link InterchangeCalendarData}
+	 * @return byte array, which is an ics-file
+	 */
 	public static byte[] createCalendarFile(InterchangeCalendarData calendarData) {
 		return new InterchangeCalendarBuilder().setStartTime(calendarData.getStartTime())
 				.setEndTime(calendarData.getEndTime()).setAppointmentName(calendarData.getAppointmentName())
 				.setAttendees(calendarData.getAttendees()).setOrganizers(calendarData.getOrganizers())
 				.setProdId(calendarData.getProdId()).setLocation(new Location(calendarData.getLocation())).build();
 	}
+
 }
