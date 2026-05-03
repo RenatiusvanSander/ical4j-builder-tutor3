@@ -2,7 +2,6 @@ package edu.remad.ical4jbuilder.exceptions;
 
 import edu.remad.ical4jbuilder.builders.InterchangeCalendarBuilder;
 
-
 /**
  * Exception for InterchangeCalendarBuilder
  * 
